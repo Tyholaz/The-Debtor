@@ -64,7 +64,7 @@ function drawG(g){
  if(!pat){const c=document.createElement('canvas');c.width=c.height=128;c.getContext('2d').drawImage(I.fl,0,0,128,128);pat=x.createPattern(c,'repeat')}
  x.fillStyle=pat;x.fillRect(-20,-20,W+40,H+40);
  [[220,170,.3],[1030,200,1.4],[300,560,2.2],[1010,570,.8]].forEach(t=>spr('tb',t[0],t[1],t[2],150));
- for(const e of s.en)if(e.d)spr('ed',e.x,e.y,Math.atan2(P.y-e.y,P.x-e.x),96);
+ for(const e of s.en)if(e.d){if(e.da===undefined)e.da=Math.atan2(P.y-e.y,P.x-e.x);spr('ed',e.x,e.y,e.da,96)}
  if(s.boss&&s.boss.d)spr('bd',s.boss.x,s.boss.y,Math.PI,170);
  for(const e of s.en)if(!e.d)spr('en',e.x,e.y,Math.atan2(P.y-e.y,P.x-e.x),96);
  if(s.boss&&!s.boss.d)spr('bo',s.boss.x,s.boss.y,Math.PI,170);
@@ -129,10 +129,10 @@ function drawG(g){
  x.translate(-c.x,-c.y);
  x.fillStyle=pat;x.fillRect(0,0,WW,WH);
  TB.forEach(t=>spr('tb',t[0],t[1],t[2],150));
- for(const e of s.en)if(e.d)spr('ed',e.x,e.y,Math.atan2(P.y-e.y,P.x-e.x),96);
+ for(const e of s.en)if(e.d){if(e.da===undefined)e.da=Math.atan2(P.y-e.y,P.x-e.x);spr('ed',e.x,e.y,e.da,96)}
  if(s.boss&&s.boss.d)spr('bd',s.boss.x,s.boss.y,Math.PI,170);
  for(const e of s.en)if(!e.d)spr('en',e.x,e.y,Math.atan2(P.y-e.y,P.x-e.x),96);
- if(s.boss&&!s.boss.d)spr('bo',s.boss.x,s.boss.y,Math.atan2(P.y-s.boss.y,P.x-s.boss.x)+Math.PI,170);
+ if(s.boss&&!s.boss.d)spr('bo',s.boss.x,s.boss.y,Math.atan2(P.y-s.boss.y,P.x-s.boss.x),170);
  if(bat){const f=s.sw<.45?1+Math.min(8,Math.floor(s.sw/.05)):0;spr('b'+(f+1),P.x,P.y,s.a-.785,110)}else spr('pl',P.x,P.y,s.a,110);
  for(const p of s.pt){x.fillStyle=p.c;x.fillRect(p.x,p.y,p.s,p.s)}
  if(s.mf>0){x.fillStyle='#ffe9a0';x.beginPath();x.arc(P.x+Math.cos(s.a)*88,P.y+Math.sin(s.a)*88,22*s.mf/.08,0,7);x.fill()}
@@ -148,9 +148,9 @@ const SEG=[sc('s1',0,3.5),sc('s3',3.5,6),sc('s5',6,9.5),sc('s7',9.5,13),sc('s10'
  {a:16.5,b:33,g:1},
  sc('k2',33,34.8,1),sc('p2',34.8,36.6,1),sc('p3',36.6,38.8,1),sc('p4',38.8,40.5,1),
  {a:43,b:D,f:(p)=>pic('menu',p,12,0,1,1.06)}];
-const CAP=[[15.5,16.6,'ONE CALL.'],[17,21,'SHOOT.'],[25.2,29,'SWING.'],[30.3,33,'PAY UP.'],[33,34.8,'KILL HIM.','#ff2d7a'],[34.8,36.6,'OR HEAR HIM OUT.','#ffe6a8'],[40.6,42.9,'SOMEONE WANTS YOU BOTH DEAD.','#ff2d7a'],[46,D,'PRE ORDER ON STEAM FOR 3$','#fff']];
+const CAP=[[15.5,16.6,'ONE CALL.'],[17,21,'SHOOT.'],[25.2,29,'SWING.'],[30.3,33,'PAY UP.'],[33,34.8,'KILL HIM.','#ff2d7a'],[34.8,36.6,'OR HEAR HIM OUT.','#ffe6a8'],[40.6,42.9,'SOMEONE WANTS YOU BOTH DEAD.','#ff2d7a'],[46,D,'DOWNLOAD THE GAME','#fff']];
 function cap(t,a,b,s,c='#fff'){const p=t-a,q=Math.min(1,p/.14),sz=(b-a>5?64:92)*(1.3-.3*q);x.save();x.globalAlpha=Math.min(q,Math.min(1,(b-t)/.25));x.font=sz+'px G,Georgia,serif';x.textAlign='center';x.textBaseline='middle';x.lineWidth=10;x.lineJoin='round';x.strokeStyle='#000';
- const end=s.startsWith('PRE'),y=end?H*.84:H*.84;if(end){x.shadowColor='#ff2d7a';x.shadowBlur=QL>.7?24+12*Math.sin(t*5):0;x.font=(58*(1.3-.3*q))+'px G,Georgia,serif'}
+ const end=s.startsWith('DOWN'),y=end?H*.84:H*.84;if(end){x.shadowColor='#ff2d7a';x.shadowBlur=QL>.7?24+12*Math.sin(t*5):0;x.font=(58*(1.3-.3*q))+'px G,Georgia,serif'}
  x.strokeText(s,W/2,y);x.fillStyle=c;x.fillText(s,W/2,y);x.restore()}
 let fired={};
 function frame(){
