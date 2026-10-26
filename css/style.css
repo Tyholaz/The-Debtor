@@ -68,6 +68,7 @@ html{-webkit-text-size-adjust:100%}
 .pair{grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr))}
 @media (pointer:coarse),(max-width:700px){
  body::after{display:none}
+ .hero img{object-position:50% 50%}
  body{font-size:16px}
  section{padding:48px 16px}
  .hero-in{padding-bottom:max(32px,env(safe-area-inset-bottom))}
