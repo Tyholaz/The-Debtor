@@ -2,7 +2,7 @@
   <img src="assets/images/menu.jpg" alt="THE DEBTOR key art" width="100%">
 </p>
 
-<h1 align="center">THE DEBTOR</h1>
+<h1 align="center">THE DEBTOR <sup>DEMO</sup></h1>
 <p align="center"><b>Everyone owes something.</b></p>
 
 <p align="center">
@@ -10,6 +10,9 @@
   &nbsp;·&nbsp;
   <a href="https://tyholaz.github.io/The-Debtor/">Watch the trailer</a>
 </p>
+
+> **This is a demo version of the game.** Content and features may differ from
+> the final release.
 
 ---
 
@@ -39,7 +42,9 @@ comic-style scenes. Forty-eight hours to settle up.
 | Pistol | `1` |
 | Bat | `2` |
 
-## Download
+## Download the demo
+
+> Demo version. Not the final game.
 
 1. Download **[THE-DEBTOR-DEMO.rar](https://github.com/Tyholaz/The-Debtor/releases/download/DEMO/THE-DEBTOR-DEMO.rar)**
 2. Unpack it with [7-Zip](https://www.7-zip.org/) or WinRAR
