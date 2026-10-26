@@ -82,3 +82,16 @@ html{-webkit-text-size-adjust:100%}
 .buy-links{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;align-items:center}
 .dl{border:2px solid var(--pink);text-decoration:none;font:400 clamp(18px,2.2vw,26px) G,Georgia,serif;letter-spacing:.05em}
 .dl:hover{background:rgba(255,45,122,.18)}
+
+/* ---------- neon player (mp4) ---------- */
+.screen video{width:100%;height:100%;display:block;object-fit:contain;background:#000}
+.ctl{box-shadow:0 0 70px rgba(255,45,122,.2)}
+.ctl button{box-shadow:0 0 14px rgba(255,45,122,.45)}
+.ctl button:hover{filter:brightness(1.15)}
+.ctl button.off{background:#3a1a2e;color:var(--pink);box-shadow:none}
+#sk{-webkit-appearance:none;appearance:none;background:transparent;height:28px}
+#sk::-webkit-slider-runnable-track{height:6px;background:linear-gradient(90deg,var(--pink) var(--p,0%),#3a1a2e var(--p,0%));box-shadow:0 0 10px rgba(255,45,122,.55)}
+#sk::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:22px;margin-top:-8px;background:var(--pink);border:2px solid #12000a;border-radius:0;box-shadow:0 0 12px var(--pink)}
+#sk::-moz-range-track{height:6px;background:#3a1a2e}
+#sk::-moz-range-progress{height:6px;background:var(--pink);box-shadow:0 0 10px rgba(255,45,122,.55)}
+#sk::-moz-range-thumb{width:10px;height:18px;border-radius:0;background:var(--pink);border:2px solid #12000a;box-shadow:0 0 12px var(--pink)}
