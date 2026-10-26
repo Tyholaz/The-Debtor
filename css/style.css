@@ -46,3 +46,32 @@ figcaption small{display:block;font:16px/1.5 "Special Elite","Courier New",monos
 .buy p{margin-inline:auto}
 footer{padding:28px 20px 40px;text-align:center;color:var(--mute);font-size:15px}
 @media (prefers-reduced-motion:reduce){.tag,.cta:hover{animation:none}html{scroll-behavior:auto}}
+
+/* ---------- player ---------- */
+.player{background:#000}
+.ctl{display:flex;align-items:center;gap:12px;padding:10px 12px;background:#140a1c;border:2px solid var(--pink);border-top:0}
+.ctl button{flex:none;width:44px;height:44px;border:0;background:var(--pink);color:#12000a;font:20px/1 G,Georgia,serif;cursor:pointer}
+.ctl button:focus-visible,#sk:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.ctl span{flex:none;min-width:5.8em;text-align:right;color:var(--mute);font-size:15px}
+#sk{flex:1;min-width:0;height:28px;accent-color:var(--pink);cursor:pointer}
+.player:fullscreen{display:flex;flex-direction:column;justify-content:center}
+.player:-webkit-full-screen{display:flex;flex-direction:column;justify-content:center}
+.player:fullscreen .screen{width:min(100%,calc((100vh - 66px)*16/9));margin:0 auto}
+.player:-webkit-full-screen .screen{width:min(100%,calc((100vh - 66px)*16/9));margin:0 auto}
+button,#o,canvas{touch-action:manipulation}
+
+/* ---------- mobile ---------- */
+html,body{overflow-x:clip;max-width:100%}
+html{-webkit-text-size-adjust:100%}
+.strip{grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr))}
+.cards{grid-template-columns:repeat(auto-fit,minmax(min(230px,100%),1fr))}
+.pair{grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr))}
+@media (pointer:coarse),(max-width:700px){
+ body::after{display:none}
+ body{font-size:16px}
+ section{padding:48px 16px}
+ .hero-in{padding-bottom:max(32px,env(safe-area-inset-bottom))}
+ .ctl{gap:8px;padding:8px}
+ .ctl span{font-size:13px;min-width:5em}
+ #o span{font-size:14px;padding:0 12px}
+}

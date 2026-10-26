@@ -1,20 +1,34 @@
 const W=1280,H=720,cv=document.getElementById('c'),x=cv.getContext('2d'),o=document.getElementById('o'),m=document.getElementById('m');
 const I={},S={},D=55;let ac,base,run=false,G,ready=false;
 const L=(n)=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.src=A.i[n];I[n]=i});
-Promise.all(Object.keys(A.i).map(L)).then(()=>{ready=true;m.textContent='click to play the trailer'});
+const ABF={};
+Promise.all([...Object.keys(A.i).map(L),...Object.keys(A.s).map(k=>fetch(A.s[k]).then(r=>r.arrayBuffer()).then(b=>{ABF[k]=b}))])
+ .then(()=>{ready=true;m.textContent='press to play the trailer'})
+ .catch(()=>{m.textContent='load error: open via a web server, not file://'});
 function rng(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const wrap=a=>Math.atan2(Math.sin(a),Math.cos(a));
 function pic(n,p,d,fit,z0=1.02,z1=1.17,ox=0){const q=I[n],k=(fit?Math.min:Math.max)(W/q.width,H/q.height)*(z0+(z1-z0)*p/d),w=q.width*k,h=q.height*k;x.imageSmoothingEnabled=true;x.drawImage(q,(W-w)/2+ox*p/d,(H-h)/2,w,h)}
 function spr(n,px,py,r,sz){const q=I[n],k=sz/Math.max(q.width,q.height);x.imageSmoothingEnabled=false;x.save();x.translate(px,py);x.rotate(r);x.scale(k,k);x.drawImage(q,-q.width/2,-q.height/2);x.restore()}
-function snd(n,v=1){if(!ac)return;const s=ac.createBufferSource(),g=ac.createGain();s.buffer=S[n];g.gain.value=v;s.connect(g).connect(ac.destination);s.start()}
-function music(n,at,len,fi,fo,v){const s=ac.createBufferSource(),g=ac.createGain(),t=base+at;s.buffer=S[n];g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+fi);g.gain.setValueAtTime(v,t+len-fo);g.gain.linearRampToValueAtTime(0,t+len);s.connect(g).connect(ac.destination);s.start(t);s.stop(t+len)}
-async function go(){
- if(!ready||run)return;o.style.display='none';
+function snd(n,v=1){if(!ac||mute)return;const s=ac.createBufferSource(),g=ac.createGain();s.buffer=S[n];g.gain.value=v;s.connect(g).connect(ac.destination);track(s);s.start()}
+function music(n,at,len,fi,fo,v,t0=0){if(t0>=at+len)return;const s=ac.createBufferSource(),g=ac.createGain(),t=base+at;s.buffer=S[n];g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+fi);g.gain.setValueAtTime(v,t+len-fo);g.gain.linearRampToValueAtTime(0,t+len);s.connect(g).connect(ac.destination);track(s);s.start(Math.max(t,ac.currentTime),Math.max(0,t0-at));s.stop(t+len)}
+let paused=false,mute=false,raf=0,pT=0,pA=16,lowN=0;
+let QL=(matchMedia('(pointer:coarse)').matches||innerWidth<820)?.6:1;
+function setQ(q){QL=q;cv.width=Math.round(W*q);cv.height=Math.round(H*q);BF.width=cv.width;BF.height=cv.height}
+const SRCS=[];
+const track=s=>{SRCS.push(s);s.onended=()=>{const i=SRCS.indexOf(s);if(i>=0)SRCS.splice(i,1)}};
+function stopAll(){for(const s of SRCS.splice(0)){s.onended=null;try{s.stop()}catch(e){}}}
+async function start(t0=0,kp=false){
+ if(!ready)return;o.style.display='none';
  ac=ac||new AudioContext();await ac.resume();
- for(const k in A.s)if(!S[k])S[k]=await ac.decodeAudioData(await(await fetch(A.s[k])).arrayBuffer());
- base=ac.currentTime+.15;run=true;resetG();seen={};SH=FL=GL=0;lt=0;
- music('comic',0,16.8,.5,1,.7);music('game',16.5,24,.3,1,.55);music('ending',40,16,1.5,2,.7);
- requestAnimationFrame(frame)}
+ await Promise.all(Object.keys(A.s).filter(k=>!S[k]).map(async k=>{S[k]=await ac.decodeAudioData(ABF[k].slice(0))}));
+ stopAll();cancelAnimationFrame(raf);setQ(QL);
+ base=ac.currentTime+(kp?0:.1)-t0;run=true;paused=false;seen={};SH=FL=GL=0;lt=t0;pT=0;resetG();
+ if(t0>16.5){mute=true;const e=Math.min(t0,33)-16.5;for(let g=0;g<=e;g+=1/60)stepG(g);mute=false;SH=FL=GL=0}
+ music('comic',0,16.8,.5,1,.7,t0);music('game',16.5,24,.3,1,.55,t0);music('ending',40,16,1.5,2,.7,t0);
+ if(kp){await ac.suspend();paused=true;mute=true;frame();mute=false}else raf=requestAnimationFrame(frame)}
+function go(){return start(0)}
+async function pause(){if(!run||paused)return;paused=true;cancelAnimationFrame(raf);await ac.suspend();ui(ac.currentTime-base)}
+async function resume(){if(!run||!paused)return;await ac.resume();paused=false;pT=0;raf=requestAnimationFrame(frame);ui(ac.currentTime-base)}
 o.onclick=go;
 /* ---------- gameplay simulation (scripted) ---------- */
 function resetG(){G={r:rng(7),en:[],bl:[],eb:[],pt:[],a:0,cd:.3,sw:9,hit:true,boss:null,bt:0,shake:0,sp:0,g:0,last:0,P:{x:640,y:380}}}
@@ -61,12 +75,12 @@ function drawG(g){
  const v=x.createRadialGradient(W/2,H/2,H*.35,W/2,H/2,H*.9);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(20,0,10,.75)');x.fillStyle=v;x.fillRect(0,0,W,H)}
 function burst(s,px,py,n){for(let i=0;i<n;i++){const a=Math.random()*6.28,v=80+Math.random()*320;s.pt.push({x:px,y:py,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:.5+Math.random()*.4,s:3+Math.random()*5|0,c:Math.random()<.7?'#c40018':'#ff2a2a'})}}
 let SH=0,FL=0,GL=0,lt=0,seen={};
-function boom(v=1){if(!ac)return;const t=ac.currentTime,q=ac.createOscillator(),g=ac.createGain();q.frequency.setValueAtTime(110,t);q.frequency.exponentialRampToValueAtTime(30,t+.5);g.gain.setValueAtTime(.9*v,t);g.gain.exponentialRampToValueAtTime(.001,t+.6);q.connect(g).connect(ac.destination);q.start(t);q.stop(t+.7)}
+function boom(v=1){if(!ac||mute)return;const t=ac.currentTime,q=ac.createOscillator(),g=ac.createGain();q.frequency.setValueAtTime(110,t);q.frequency.exponentialRampToValueAtTime(30,t+.5);g.gain.setValueAtTime(.9*v,t);g.gain.exponentialRampToValueAtTime(.001,t+.6);q.connect(g).connect(ac.destination);q.start(t);q.stop(t+.7)}
 function hit(sh,fl,gl,b){SH=Math.max(SH,sh);FL=Math.max(FL,fl);GL=Math.max(GL,gl);if(b)boom(b)}
 const BF=document.createElement('canvas');BF.width=W;BF.height=H;const bx=BF.getContext('2d');let slp;
 function post(dt){
- if(GL>.03){bx.drawImage(cv,0,0);for(let i=0;i<8;i++){const y=Math.random()*H|0,h=8+Math.random()*50|0;x.drawImage(BF,0,y,W,h,(Math.random()-.5)*160*GL,y,W,h)}x.globalCompositeOperation='screen';x.fillStyle='rgba(255,45,122,'+.18*GL+')';x.fillRect(0,0,W,H);x.globalCompositeOperation='source-over'}
- if(SH>.03){bx.drawImage(cv,0,0);x.fillStyle='#000';x.fillRect(0,0,W,H);const k=34*SH,z=1+.05*SH;x.save();x.translate(W/2+(Math.random()-.5)*k,H/2+(Math.random()-.5)*k);x.rotate((Math.random()-.5)*.025*SH);x.scale(z,z);x.drawImage(BF,-W/2,-H/2);x.restore()}
+ if(GL>.03){bx.drawImage(cv,0,0);for(let i=0;i<8;i++){const y=Math.random()*H|0,h=8+Math.random()*50|0;x.drawImage(BF,0,y*QL,BF.width,h*QL,(Math.random()-.5)*160*GL,y,W,h)}x.globalCompositeOperation='screen';x.fillStyle='rgba(255,45,122,'+.18*GL+')';x.fillRect(0,0,W,H);x.globalCompositeOperation='source-over'}
+ if(SH>.03){bx.drawImage(cv,0,0);x.fillStyle='#000';x.fillRect(0,0,W,H);const k=34*SH,z=1+.05*SH;x.save();x.translate(W/2+(Math.random()-.5)*k,H/2+(Math.random()-.5)*k);x.rotate((Math.random()-.5)*.025*SH);x.scale(z,z);x.drawImage(BF,-W/2,-H/2,W,H);x.restore()}
  if(FL>.03){x.fillStyle='rgba(255,255,255,'+Math.min(1,FL)+')';x.fillRect(0,0,W,H)}
  if(!slp){const c=document.createElement('canvas');c.width=4;c.height=4;const q=c.getContext('2d');q.fillStyle='#000';q.fillRect(0,0,4,1);slp=x.createPattern(c,'repeat')}
  x.globalAlpha=.16;x.fillStyle=slp;x.fillRect(0,0,W,H);x.globalAlpha=1;
@@ -136,11 +150,12 @@ const SEG=[sc('s1',0,3.5),sc('s3',3.5,6),sc('s5',6,9.5),sc('s7',9.5,13),sc('s10'
  {a:43,b:D,f:(p)=>pic('menu',p,12,0,1,1.06)}];
 const CAP=[[15.5,16.6,'ONE CALL.'],[17,21,'SHOOT.'],[25.2,29,'SWING.'],[30.3,33,'PAY UP.'],[33,34.8,'KILL HIM.','#ff2d7a'],[34.8,36.6,'OR HEAR HIM OUT.','#ffe6a8'],[40.6,42.9,'SOMEONE WANTS YOU BOTH DEAD.','#ff2d7a'],[46,D,'PRE ORDER ON STEAM FOR 3$','#fff']];
 function cap(t,a,b,s,c='#fff'){const p=t-a,q=Math.min(1,p/.14),sz=(b-a>5?64:92)*(1.3-.3*q);x.save();x.globalAlpha=Math.min(q,Math.min(1,(b-t)/.25));x.font=sz+'px G,Georgia,serif';x.textAlign='center';x.textBaseline='middle';x.lineWidth=10;x.lineJoin='round';x.strokeStyle='#000';
- const end=s.startsWith('PRE'),y=end?H*.84:H*.84;if(end){x.shadowColor='#ff2d7a';x.shadowBlur=24+12*Math.sin(t*5);x.font=(58*(1.3-.3*q))+'px G,Georgia,serif'}
+ const end=s.startsWith('PRE'),y=end?H*.84:H*.84;if(end){x.shadowColor='#ff2d7a';x.shadowBlur=QL>.7?24+12*Math.sin(t*5):0;x.font=(58*(1.3-.3*q))+'px G,Georgia,serif'}
  x.strokeText(s,W/2,y);x.fillStyle=c;x.fillText(s,W/2,y);x.restore()}
 let fired={};
 function frame(){
- const t=ac.currentTime-base,dt=Math.max(0,Math.min(.1,t-lt));lt=t;x.fillStyle='#000';x.fillRect(0,0,W,H);
+ const t=ac.currentTime-base,dt=Math.max(0,Math.min(.1,t-lt));lt=t;if(!paused){const nw=performance.now();if(pT)pA=pA*.9+Math.min(80,nw-pT)*.1;pT=nw;lowN=pA>27?lowN+1:0;if(lowN>50&&QL>.45){setQ(Math.max(.4,QL-.15));lowN=0;pA=16}}
+ x.setTransform(QL,0,0,QL,0,0);x.fillStyle='#000';x.fillRect(0,0,W,H);
  SEG.forEach((s,i)=>{if(t>=s.a&&t<s.a+.5&&!seen[i]){seen[i]=1;if(i==6){hit(1.4,1,.7,1.3);snd('pistol',1)}else if(i==10)hit(1,.9,.5,1.4);else if(i==5)hit(.6,.6,.4,1);else if(i>0)hit(.55,.4,.35,.8)}});
  CAP.forEach((c,i)=>{if(t>=c[0]&&t<c[0]+.5&&!seen['c'+i]){seen['c'+i]=1;hit(.45,.15,.15,.5)}});
  for(const s of SEG)if(t>=s.a&&t<s.b){const p=t-s.a;if(s.g){if(p<.05)resetG();stepG(p);drawG(p)}else s.f(p);
@@ -149,4 +164,20 @@ function frame(){
  if(t>=40.5&&t<42.9){}
  for(const c of CAP)if(t>=c[0]&&t<c[1])cap(t,c[0],c[1],c[2],c[3]);
  post(dt);
- if(t<D+1)requestAnimationFrame(frame);else{run=false;m.textContent='click to replay';o.style.display='grid'}}
+ ui(Math.max(0,Math.min(t,D)));if(t<D+1){if(!paused)raf=requestAnimationFrame(frame)}else{run=false;paused=false;m.textContent='press to replay';o.style.display='grid';ui(D)}}
+
+/* ---------- player controls ---------- */
+const PB=document.getElementById('pp'),SK=document.getElementById('sk'),TM=document.getElementById('tm'),FS=document.getElementById('fs'),PL=document.getElementById('pl');
+let drag=false;
+const fmt=s=>{s=Math.max(0,s|0);return(s/60|0)+':'+String(s%60).padStart(2,'0')};
+function ui(t=0){const pl=run&&!paused;PB.textContent=pl?'❚❚':'▶';PB.setAttribute('aria-label',pl?'Pause':'Play');if(!drag)SK.value=t;TM.textContent=fmt(+SK.value)+' / '+fmt(D)}
+const toggle=()=>!run?start(0):paused?resume():pause();
+PB.onclick=toggle;
+cv.onclick=()=>{if(run)toggle()};
+SK.oninput=()=>{drag=true;ui()};
+SK.onchange=()=>{drag=false;const kp=run&&paused;start(Math.min(+SK.value,D-.1),kp)};
+document.addEventListener('visibilitychange',()=>{if(document.hidden)pause()});
+const rf=PL.requestFullscreen||PL.webkitRequestFullscreen,fe=()=>document.fullscreenElement||document.webkitFullscreenElement;
+if(!rf)FS.hidden=true;
+FS.onclick=()=>fe()?(document.exitFullscreen||document.webkitExitFullscreen).call(document):rf.call(PL);
+ui(0);
