@@ -148,9 +148,9 @@ const SEG=[sc('s1',0,3.5),sc('s3',3.5,6),sc('s5',6,9.5),sc('s7',9.5,13),sc('s10'
  {a:16.5,b:33,g:1},
  sc('k2',33,34.8,1),sc('p2',34.8,36.6,1),sc('p3',36.6,38.8,1),sc('p4',38.8,40.5,1),
  {a:43,b:D,f:(p)=>pic('menu',p,12,0,1,1.06)}];
-const CAP=[[15.5,16.6,'ONE CALL.'],[17,21,'SHOOT.'],[25.2,29,'SWING.'],[30.3,33,'PAY UP.'],[33,34.8,'KILL HIM.','#ff2d7a'],[34.8,36.6,'OR HEAR HIM OUT.','#ffe6a8'],[40.6,42.9,'SOMEONE WANTS YOU BOTH DEAD.','#ff2d7a'],[46,D,'DOWNLOAD THE GAME','#fff']];
+const CAP=[[15.5,16.6,'ONE CALL.'],[17,21,'SHOOT.'],[25.2,29,'SWING.'],[30.3,33,'PAY UP.'],[33,34.8,'KILL HIM.','#ff2d7a'],[34.8,36.6,'OR HEAR HIM OUT.','#ffe6a8'],[40.6,42.9,'SOMEONE WANTS YOU BOTH DEAD.','#ff2d7a'],[46,D,'PRE ORDER ON STEAM FOR 3$','#fff']];
 function cap(t,a,b,s,c='#fff'){const p=t-a,q=Math.min(1,p/.14),sz=(b-a>5?64:92)*(1.3-.3*q);x.save();x.globalAlpha=Math.min(q,Math.min(1,(b-t)/.25));x.font=sz+'px G,Georgia,serif';x.textAlign='center';x.textBaseline='middle';x.lineWidth=10;x.lineJoin='round';x.strokeStyle='#000';
- const end=s.startsWith('DOWN'),y=end?H*.84:H*.84;if(end){x.shadowColor='#ff2d7a';x.shadowBlur=QL>.7?24+12*Math.sin(t*5):0;x.font=(58*(1.3-.3*q))+'px G,Georgia,serif'}
+ const end=s.startsWith('PRE'),y=end?H*.84:H*.84;if(end){x.shadowColor='#ff2d7a';x.shadowBlur=QL>.7?24+12*Math.sin(t*5):0;x.font=(58*(1.3-.3*q))+'px G,Georgia,serif'}
  x.strokeText(s,W/2,y);x.fillStyle=c;x.fillText(s,W/2,y);x.restore()}
 let fired={};
 function frame(){
