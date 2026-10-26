@@ -16,13 +16,7 @@
 <section id="trailer"><div class="w">
  <h2>Forty-eight hours to settle up</h2>
  <p>One call, one debt and one way out. Press play, turn the sound on.</p>
- <div class="player" id="pl">
- <div class="screen">
-  <canvas id="c" width="1280" height="720" aria-label="THE DEBTOR trailer"></canvas>
-  <div id="o" role="button" tabindex="0"><div><b>THE DEBTOR</b><span id="m">loading…</span></div></div>
- </div>
- <div class="ctl"><button id="pp" type="button" aria-label="Play">▶</button><input id="sk" type="range" min="0" max="55" step="0.1" value="0" aria-label="Seek"><span id="tm">0:00 / 0:55</span><button id="fs" type="button" aria-label="Fullscreen">⛶</button></div>
- </div>
+ <video class="vid" controls playsinline preload="metadata" poster="assets/images/menu.jpg"><source src="assets/video/trailer.mp4" type="video/mp4"></video>
 </div></section>
 
 <section class="story"><div class="w">
@@ -60,11 +54,14 @@
  <h2>Pre order on Steam for 3$</h2>
  <p>Cheaper than the debt.</p>
  <!-- Replace # with your Steam page URL -->
- <a class="cta" href="#">Pre order on Steam for 3$</a>
+ <div class="buy-links">
+  <a class="cta" href="#">Pre order on Steam for 3$</a>
+  <!-- Replace YOUR_USER/YOUR_REPO with your GitHub repo; the file name must match the release asset -->
+  <a class="ghost dl" href="https://github.com/YOUR_USER/YOUR_REPO/releases/latest/download/THE-DEBTOR.zip" rel="noopener" download>Download the game (Windows, .zip)</a>
+ </div>
 </div></section>
 <footer>THE DEBTOR</footer>
 
 <script src="js/assets.js"></script>
-<script src="js/trailer.js"></script>
 <script src="js/page.js"></script>
 </body></html>

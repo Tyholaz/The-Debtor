@@ -181,3 +181,5 @@ const rf=PL.requestFullscreen||PL.webkitRequestFullscreen,fe=()=>document.fullsc
 if(!rf)FS.hidden=true;
 FS.onclick=()=>fe()?(document.exitFullscreen||document.webkitExitFullscreen).call(document):rf.call(PL);
 ui(0);
+
+o.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});

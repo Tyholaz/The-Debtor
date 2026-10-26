@@ -76,3 +76,9 @@ html{-webkit-text-size-adjust:100%}
  .ctl span{font-size:13px;min-width:5em}
  #o span{font-size:14px;padding:0 12px}
 }
+
+/* ---------- video + download ---------- */
+.vid{display:block;width:100%;aspect-ratio:16/9;background:#000;border:2px solid var(--pink);box-shadow:0 0 70px rgba(255,45,122,.35)}
+.buy-links{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;align-items:center}
+.dl{border:2px solid var(--pink);text-decoration:none;font:400 clamp(18px,2.2vw,26px) G,Georgia,serif;letter-spacing:.05em}
+.dl:hover{background:rgba(255,45,122,.18)}
